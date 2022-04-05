@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Pokedex.Api.Controllers
 {
     [ApiController]
-    [Route("pokemon")]
+    [Route("pokemon/")]
     public class PokemonController : ControllerBase
     {
         private readonly IPokemonTranslationProvider translationProvider;
@@ -23,11 +23,15 @@ namespace Pokedex.Api.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "Get pokemon by name")]
+        [HttpGet("{name}", Name = "Get pokemon by name or id")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Pokemon>> GetPokemon([Required] string name)
         {
+            if (String.IsNullOrEmpty(name))
+                return BadRequest("Pokemon name must be specified");
+
             try
             {
                 var pokemonSpecies = await pokemonClient.GetPokemonSpecies(name);
@@ -39,7 +43,7 @@ namespace Pokedex.Api.Controllers
             }
         }
 
-        [HttpGet("translated/{name}", Name = "Get translated pokemon by name")]
+        [HttpGet("translated/{name}", Name = "Get translated pokemon description by id or name")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Pokemon>> GetTranslatedPokemon([Required] string name)
