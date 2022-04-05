@@ -46,6 +46,7 @@ namespace Pokedex.Api.Controllers
         [HttpGet("translated/{name}", Name = "Get translated pokemon description by id or name")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Pokemon>> GetTranslatedPokemon([Required] string name)
         {
             try
